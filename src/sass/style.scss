@@ -1,0 +1,33 @@
+// import libraries
+@import url("./../css/bootstrap.min.css");
+@import url("./../css/swiper.css");
+
+// import base styles
+
+@import "./base/variables";
+@import "./base/mixins";
+
+// import components styles
+
+@import "./components/header";
+@import "./components/footer";
+@import "./components/hero";
+@import "./components/amenities";
+@import "./components/rooms";
+@import "./components/about";
+@import "./components/nearby";
+@import "./components/banner";
+@import "./components/hero-pages";
+@import "./components/page-title-template";
+@import "./components/_blog_grid_template";
+@import "./components/_room-popup";
+
+// import pages styles
+
+@import "./pages/page_rooms";
+@import "./pages/page_specials";
+@import "./pages/page_blog";
+@import "./pages/page_discover";
+@import "./pages/page_about";
+@import "./pages/page_contact";
+@import "./pages/page_single_special";
