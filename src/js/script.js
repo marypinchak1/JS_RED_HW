@@ -1,162 +1,246 @@
-// import libs
-
-// import modules
-
-// import slider
-
-// import utils
-// Create a class for Client with properties name, account number, and balance, and methods for getting balance and withdrawing money from the account.
-
-
-// a program to manage a bank:
-
 // 1. Create a class "Client" with properties "name", "account number", and "balance", and methods for getting balance and withdrawing money from the account.
 class Client {
-constructor(name, accountNumber, balance) {
-this.name = name;
-this.accountNumber = accountNumber;
-this.balance = balance;
-}
+  constructor(
+    name,
+    accountNumber,
+    balance,
+    interestRate = null,
+    creditLimit = null,
+    accountType
+  ) {
+    this.name = name;
+    this.accountNumber = accountNumber;
+    this.balance = balance;
+    this.interestRate = interestRate;
+    this.creditLimit = creditLimit;
+    this.accountType = accountType;
 
-getBalance() {
-return this.balance;
-}
+    if (this.accountType === "Credit Account") {
+      this.creditAccount = new CreditAccount (this.name, this.accountNumber, this.balance, this.creditLimit);
+    } else if (this.interestRate != null) {
+      // create a new instance of DepositAccount
+      this.depositAccount = new DepositAccount(this.name, this.accountNumber, this.balance, this.interestRate);
+    }
+  }
+  
+  getBalance() {
+    return this.balance;
+  }
 
-withdrawMoney(amount) {
-if (this.balance >= amount) {
-this.balance -= amount;
-return amount;
-} else {
-return "Insufficient balance";
-}
-}
+  withdraw(amount) {
+    if (amount > this.balance) {
+      console.log("Insufficient funds");
+    } else {
+      this.balance -= amount;
+      console.log(
+        `Successfully withdrew ${amount} from account ${this.accountNumber}`
+      );
+    }
+  }
 }
 
 // 2. Create a class "Account" with properties "account number" and "balance", and a method for withdrawing money from the account.
 class Account {
-constructor(accountNumber, balance) {
-this.accountNumber = accountNumber;
-this.balance = balance;
-}
+  constructor(accountNumber, balance) {
+    this.accountNumber = accountNumber;
+    this.balance = balance;
+  }
 
-withdrawMoney(amount) {
-if (this.balance >= amount) {
-this.balance -= amount;
-return amount;
-} else {
-return "Insufficient balance";
-}
-}
+  withdraw(amount) {
+    if (amount > this.balance) {
+      console.log("Insufficient funds");
+    } else {
+      this.balance -= amount;
+      console.log(
+        `Successfully withdrew ${amount} from account ${this.accountNumber}`
+      );
+    }
+  }
 }
 
 // 3. Create a class "CreditAccount" that extends Account with a "credit limit" property, and methods for withdrawing money from the account and the credit limit.
 class CreditAccount extends Account {
-constructor(accountNumber, balance, creditLimit) {
-super(accountNumber, balance);
-this.creditLimit = creditLimit;
-}
+  constructor(accountNumber, balance, creditLimit) {
+    super(accountNumber, balance);
+    this.creditLimit = creditLimit;
+  }
 
-withdrawMoney(amount) {
-if (this.balance + this.creditLimit >= amount) {
-if (this.balance >= amount) {
-this.balance -= amount;
-} else {
-this.creditLimit -= amount - this.balance;
-this.balance = 0;
-}
-return amount;
-} else {
-return "Insufficient balance";
-}
-}
+  withdraw(amount) {
+    if (amount > this.balance + this.creditLimit) {
+      console.log("Insufficient funds");
+    } else if (amount > this.balance) {
+      const amountFromCredit = amount - this.balance;
+      this.balance = 0;
+      this.creditLimit -= amountFromCredit;
+      console.log(
+        `Successfully withdrew ${amount} (with ${amountFromCredit} from credit) from account ${this.accountNumber}`
+      );
+    } else {
+      this.balance -= amount;
+      console.log(
+        `Successfully withdrew ${amount} from account ${this.accountNumber}`
+      );
+    }
+  }
 }
 
 // 4. Create a class "DepositAccount" that extends Account with an "interest" property, and a method for adding interest to the account balance.
 class DepositAccount extends Account {
-constructor(accountNumber, balance, interest) {
-super(accountNumber, balance);
-this.interest = interest;
-}
+  constructor(accountNumber, balance, interestRate) {
+    super(accountNumber, balance);
+    this.interestRate = interestRate;
+  }
 
-addInterest() {
-this.balance += this.balance * (this.interest / 100);
-return this.balance;
-}
+  addInterest() {
+    const interest = this.balance * (this.interestRate / 100);
+    this.balance += interest;
+    console.log(
+      `Added ${interest} of interest to account ${this.accountNumber}`
+    );
+    
+  }
 }
 
 // 5. Create a class "Bank" with properties "name" and an array of clients, and methods for adding a new client, removing a client, and checking a client's balance.
 class Bank {
-constructor(name) {
-this.name = name;
-this.clients = [];
+  constructor(name) {
+    this.name = name;
+    this.clients = [];
+  }
+
+  addClient(client) {
+    this.clients.push(client);
+    console.log(
+      `Added client ${client.name} with account number ${client.accountNumber} to bank ${this.name}`
+    );
+  }
+
+  removeClient(client) {
+    const index = this.clients.indexOf(client);
+    if (index === -1) {
+      console.log("Client not found in bank");
+    } else {
+      this.clients.splice(index, 1);
+      console.log(
+        `Removed client ${client.name} with account number ${client.accountNumber} from bank ${this.name}`
+      );
+    }
+  }
+
+   getClientBalance(accountNumber) {
+    const client = this.clients.find((c) => c.accountNumber === accountNumber);
+    if (client) {
+      console.log(
+        `Balance of account ${accountNumber}: ${client.getBalance()}`
+      );
+    } else {
+      console.log("Client not found in bank");
+    }
+  }
 }
+// *****START POINT OF THE APPLICATION*****
+document.addEventListener("DOMContentLoaded", function () {
+  // 6. Adding some clients with different types of accounts.
 
-addClient(client) {
-this.clients.push(client);
-}
+  // Create a new Bank object
+  const myBank = new Bank("My Bank");
 
-removeClient(client) {
-const index = this.clients.indexOf(client);
-if (index !== -1) {
-this.clients.splice(index, 1);
-}
-}
+  // Create clients with different types of accounts
+  const client1 = new Client(
+    "Mariia Pinchak",
+    "001",
+    15000,
+    "-",
+    "-",
+    "Regular Account"
+  );
+  const client2 = new Client(
+    "Iryna Pec",
+    "002",
+    20000,
+    "-",
+    "-",
+    "Regular Account"
+  );
+  const client3 = new Client(
+    "Ihor Lialiuk",
+    "003",
+    40000,
+    5,
+    "-",
+    "Deposit Account"
+  );
+  const client4 = new Client(
+    "Vasyl Melko",
+    "004",
+    10000,
+    5,
+    "-",
+    "Deposit Account"
+  );
+  const client5 = new Client(
+    "Nazarii Kekosh",
+    "005",
+    5000,
+    "-",
+    2000,
+    "Credit Account"
+  );
+  const client6 = new Client(
+    "Ostap Vasylenko",
+    "006",
+    8000,
+    "-",
+    4000,
+    "Credit Account"
+  );
 
-checkBalance(client) {
-const index = this.clients.indexOf(client);
-if (index !== -1) {
-return client.getBalance();
-} else {
-return "Client not found";
-}
-}
-}
+  // Add the clients to the bank
+  myBank.addClient(client1);
+  myBank.addClient(client2);
+  myBank.addClient(client3);
+  myBank.addClient(client4);
+  myBank.addClient(client5);
+  myBank.addClient(client6);
 
+  // Get the HTML element for the bank div
+  const bankDiv = document.getElementById("bank");
 
-// 6. In the main program, create a Bank object and add some clients with different types of accounts.
+  // Create a table to display the client information
+  const table = document.createElement("table");
 
-const bank = new Bank("My Bank");
+  // Create the table header
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML =
+    "<th>Name</th><th>Account Number</th><th>Balance, USD</th><th>Interest Rate, %</th><th>Credit Limit, USD</th><th>Account Type</th>";
+  table.appendChild(headerRow);
 
-// create a client with a regular account
-const client1 = new Client("John Smith", "123456", 5000);
-bank.addClient(client1);
+  // Add each client to the table
+  for (const client of myBank.clients) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${client.name}</td><td>${client.accountNumber}</td><td>${client.balance}</td><td>${client.interestRate}</td><td>${client.creditLimit}</td><td>${client.accountType}</td>`;
+    table.appendChild(row);
+  }
 
-// create a client with a credit account
-const client2 = new CreditAccount("Jane Doe", "654321", 1000, 5000);
-bank.addClient(client2);
+  // Add the table to the bank div
+  bankDiv.appendChild(table);
 
-// create a client with a deposit account
-const client3 = new DepositAccount("Bob Johnson", "987654", 20000, 5);
-bank.addClient(client3);
+  // 8. Demonstrate the functionality of the bank.
 
-// 7. Test the program by checking the balance of each client and making some withdrawals.
+  // Get the balance of the client's account
+  console.log(client1.getBalance()); // Output: 15000
 
-// check the balance of client1
-console.log(`${client1.name}'s balance is ${bank.checkBalance(client1)}`);
+  // Withdraw money from the client's account
+  client3.withdraw(5000);
+  console.log(client3.getBalance()); // Output: 35000
 
-// withdraw 2000 from client1's account
-const amountWithdrawn = client1.withdrawMoney(2000);
-console.log(`${amountWithdrawn} withdrawn from ${client1.name}'s account. New balance is ${bank.checkBalance(client1)}`);
+  // Remove a client from the bank
+  myBank.removeClient(client5);
 
-// check the balance of client2
-console.log(`${client2.name}'s balance is ${bank.checkBalance(client2)}`);
+  // Get the balance of a client's account
+  myBank.getClientBalance("007"); // Output: Client not found in bank
 
-// withdraw 5000 from client2's account
-const amountWithdrawn2 = client2.withdrawMoney(5000);
-console.log(`${amountWithdrawn2} withdrawn from ${client2.name}'s account. New balance is ${bank.checkBalance(client2)}`);
-
-// withdraw 6000 from client2's account
-const amountWithdrawn3 = client2.withdrawMoney(6000);
-console.log(`${amountWithdrawn3} withdrawn from ${client2.name}'s account. New balance is ${bank.checkBalance(client2)}`);
-
-// check the balance of client3
-console.log(`${client3.name}'s balance is ${bank.checkBalance(client3)}`);
-
-// add interest to client3's account
-const balanceWithInterest = client3.addInterest();
-console.log(`Interest added to ${client3.name}'s account. New balance is ${balanceWithInterest}`);
-
-document.addEventListener('DOMContentLoaded', () => {
-  // code to execute when the DOM is ready
+  // Add interest to the client's account
+  client4.depositAccount.addInterest();
+  console.log(client4.getBalance()); // Output: 10500
 });
-

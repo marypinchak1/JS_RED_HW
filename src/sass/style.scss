@@ -7,27 +7,35 @@
 @import "./base/variables";
 @import "./base/mixins";
 
-// import components styles
 
-@import "./components/header";
-@import "./components/footer";
-@import "./components/hero";
-@import "./components/amenities";
-@import "./components/rooms";
-@import "./components/about";
-@import "./components/nearby";
-@import "./components/banner";
-@import "./components/hero-pages";
-@import "./components/page-title-template";
-@import "./components/_blog_grid_template";
-@import "./components/_room-popup";
+h1{
+text-align: center;
+    font-size: 64px;
+    font-weight: 700;
+    color: #0a3b03;
+    margin: 40px 0 0 0;
+}
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 90%;
+  margin: 3% 5%;
+}
 
-// import pages styles
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
 
-@import "./pages/page_rooms";
-@import "./pages/page_specials";
-@import "./pages/page_blog";
-@import "./pages/page_discover";
-@import "./pages/page_about";
-@import "./pages/page_contact";
-@import "./pages/page_single_special";
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
